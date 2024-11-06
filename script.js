@@ -1,32 +1,18 @@
-  // Import the functions you need from the SDKs you need
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-  import {getDatabase , ref , get, child} from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
-
-  // Your web app's Firebase configuration
-  const firebaseConfig = {
-    apiKey: "AIzaSyApFwTd1Co19uqzd_enGfVkfgLG7NJjJbs",
-    authDomain: "fitness-40e1f.firebaseapp.com",
-    projectId: "fitness-40e1f",
-    storageBucket: "fitness-40e1f.appspot.com",
-    messagingSenderId: "887213343607",
-    appId: "1:887213343607:web:e159258751252fb3641772"
-  };
-
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-
-  //get ref to database services
-  const db = getDatabase(app);
-
-  document.getElementById("Register").addEventListener('click', function(e){
-
-
-    set(ref(db, 'user/' + document.getElementById("Firstname").value),
-    {
-      Firstname : document.getElementById("Firstname").value,
-      Lastname : document.getElementById("Lastname").value,
-      Email : document.getElementById("Email").value,
-      Password : document.getElementById("Password").value,
-    });
-      alert("Signup successful !")
-  });
+async function getRecommendation() {
+    const userInput = document.getElementById('userInput').value;
+    const response = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer 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`
+      },
+      body: JSON.stringify({
+        model: "gpt-4",
+        messages: [{ "role": "user", "content": userInput }]
+      })
+    });
+  
+    const data = await response.json();
+    document.getElementById('recommendationOutput').textContent = data.choices[0].message.content;
+  }
+  
